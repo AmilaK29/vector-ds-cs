@@ -199,6 +199,13 @@ namespace Vector
             
             
         }
+        public void Sort(){
+            Array.Sort(data, 0, Count, Comparer<T>.Default);
+        }
+
+        public void Sort(IComparer<T> comparer){
+            Array.Sort(data, 0, Count, comparer ?? Comparer<T>.Default);
+        }
 
     }
 }

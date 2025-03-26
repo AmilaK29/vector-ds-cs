@@ -28,7 +28,7 @@ namespace Vector
         }
     }
 
-    public class Student
+    public class Student : IComparable<Student>
     {
         public string Name { get; set; }
         public int Id { get; set; }
@@ -37,17 +37,32 @@ namespace Vector
         {
             return Id + "[" + Name + "]";
         }
+        // Implementing IComparable<Student> to allow sorting by ID in ascending order
+        public int CompareTo(Student another)
+        {
+            return this.Id.CompareTo(another.Id);
+        }
 
     }
 
-    public class AscendingIDComparer
+    public class AscendingIDComparer : IComparer<Student>
     {
-
+        public int Compare(Student a, Student b)
+        {
+            return a.Id.CompareTo(b.Id);
+        }
     }
 
-    public class DescendingNameDescendingIdComparer
+    public class DescendingNameDescendingIdComparer : IComparer<Student>
     {
- 
+        public int Compare(Student a, Student b)
+        {
+            int nameComparison = b.Name.CompareTo(a.Name);
+            if (nameComparison != 0) return nameComparison;
+            
+            // Break ties by descending ID order
+            return b.Id.CompareTo(a.Id);
+        }
     }
 
     // 
@@ -79,8 +94,8 @@ namespace Vector
                 vector.Add(3); vector.Add(5); vector.Add(7); vector.Add(1); vector.Add(4); vector.Add(9);
                 if (!CheckIntSequence(new int[] { 2, 6, 8, 5, 5, 1, 8, 5, 3, 5, 7, 1, 4, 9 }, vector)) throw new Exception("Vector stores an incorrect sequence of integers after adding new elements");
                 Console.WriteLine("Sort the integers in the default order defined by the native CompareTo() method");
-                //uncomment the line to activate the test
-                //vector.Sort();
+                // uncomment the line to activate the test
+                vector.Sort();
                 int[] array = new int[] { 2, 6, 8, 5, 5, 1, 8, 5, 3, 5, 7, 1, 4, 9 };
                 Array.Sort(array, 0, 14);
                 Console.WriteLine("Resulting order: " + vector.ToString());
@@ -107,7 +122,7 @@ namespace Vector
                 if (!CheckIntSequence(new int[] { 2, 6, 8, 5, 5, 1, 8, 5, 3, 5, 7, 1, 4, 9 }, vector)) throw new Exception("Vector stores an incorrect sequence of integers after adding new elements");
                 Console.WriteLine("Sort the integers in the order defined by the AscendingIntComparer class");
                 //uncomment the line to activate the test
-                //vector.Sort(new AscendingIntComparer());
+                vector.Sort(new AscendingIntComparer());
                 int[] array = new int[] { 2, 6, 8, 5, 5, 1, 8, 5, 3, 5, 7, 1, 4, 9 };
                 Array.Sort(array, 0, 14, new AscendingIntComparer());
                 Console.WriteLine("Resulting order: " + vector.ToString());
@@ -134,7 +149,7 @@ namespace Vector
                 if (!CheckIntSequence(new int[] { 2, 6, 8, 5, 5, 1, 8, 5, 3, 5, 7, 1, 4, 9 }, vector)) throw new Exception("Vector stores an incorrect sequence of integers after adding new elements");
                 Console.WriteLine("Sort the integers in the order defined by the DescendingIntComparer class");
                 //uncomment the line to activate the test
-                //vector.Sort(new DescendingIntComparer());
+                vector.Sort(new DescendingIntComparer());
                 int[] array = new int[] { 2, 6, 8, 5, 5, 1, 8, 5, 3, 5, 7, 1, 4, 9 };
                 Array.Sort(array, 0, 14, new DescendingIntComparer());
                 Console.WriteLine("Resulting order: " + vector.ToString());
@@ -161,7 +176,7 @@ namespace Vector
                 if (!CheckIntSequence(new int[] { 2, 6, 8, 5, 5, 1, 8, 5, 3, 5, 7, 1, 4, 9 }, vector)) throw new Exception("Vector stores an incorrect sequence of integers after adding new elements");
                 Console.WriteLine("Sort the integers in the order defined by the EvenNumberFirstComparer class");
                 //uncomment the line to activate the test
-                //vector.Sort(new EvenNumberFirstComparer());
+                vector.Sort(new EvenNumberFirstComparer());
                 int[] array = new int[] { 2, 6, 8, 5, 5, 1, 8, 5, 3, 5, 7, 1, 4, 9 };
                 Array.Sort(array, 0, 14, new EvenNumberFirstComparer());
                 Console.WriteLine("Resulting order: " + vector.ToString());
