@@ -67,7 +67,7 @@ namespace Vector
             {
                 // First this checks whether the capacity is zero, if it is, it will set the capacity to 1
                 // Otherwise, it will double the capacity
-                resize(Capacity == 0 ? 1 : Capacity * 2);
+                ExtendData(Capacity == 0 ? 1 : Capacity * 2);
             }
 
 
@@ -106,7 +106,7 @@ namespace Vector
                 // Double the capacity
                 // If the count is 0, set the capacity to 1
                 // Otherwise, double the capacity
-                resize(Count == 0 ? 1 : Capacity * 2);    
+                ExtendData(Count == 0 ? 1 : Capacity * 2);    
             }
 
             // Shift elements to the right
@@ -122,23 +122,7 @@ namespace Vector
             Count++;
         }
 
-        private void resize(int newCapacity)
-        {
-            // Ensure that we are only doubling the capacity and not applying other values
-            if (newCapacity <= Capacity) return; 
-
-            // Create a new array with the new capacity (doubled capacity)
-            T[] newData = new T[newCapacity];
-
-            // Copy existing elements
-            for (int i = 0; i < Count; i++)
-            {
-                newData[i] = data[i];
-            }
-
-            // Update the data array to point to the new array
-            data = newData;
-        }
+        
 
         public void Clear()  
         {   
