@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+
 namespace Vector
 {
-    public class Vector<T>
+    public class Vector<T> where T : IComparable<T>
     {
         // This constant determines the default number of elements in a newly created vector.
         // It is also used to extended the capacity of the existing vector
@@ -182,6 +183,18 @@ namespace Vector
             return result;
             
             
+        }
+
+        public void Sort(ISorter algorithm, IComparer<T> comparer)
+        {
+            if (algorithm == null)
+            {
+                Array.Sort(data, 0, Count, comparer);
+            }
+            else
+            {
+                algorithm.Sort(data, 0, Count, comparer);
+            }
         }
 
     }
