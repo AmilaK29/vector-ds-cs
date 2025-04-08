@@ -20,37 +20,8 @@ namespace Vector
         }
     }
 
-    public class EvenNumberFirstComparer : IComparer<int>
-    {
-        public int Compare(int A, int B)
-        {
-            return A % 2 - B % 2;
-        }
-    }
-
     class Tester
     {
-        private static bool CheckAscending(Vector<int> vector)
-        {
-            for (int i = 0; i < vector.Count - 1; i++)
-                if (vector[i] > vector[i + 1]) return false;
-            return true;
-        }
-
-        private static bool CheckDescending(Vector<int> vector)
-        {
-            for (int i = 0; i < vector.Count - 1; i++)
-                if (vector[i] < vector[i + 1]) return false;
-            return true;
-        }
-
-        private static bool CheckEvenNumberFirst(Vector<int> vector)
-        {
-            for (int i = 0; i < vector.Count - 1; i++)
-                if (vector[i] % 2 > vector[i + 1] % 2) return false;
-            return true;
-        }
-
         static void Main(string[] args)
         {
             string result = "";
@@ -58,27 +29,31 @@ namespace Vector
             int[] data = new int[problem_size]; data[0] = 333;
             Random k = new Random(1000);
             for (int i = 1; i < problem_size; i++) data[i] = 100 + k.Next(900);
+            Vector<int> vector = null;
 
-            Vector<int> vector = new Vector<int>(problem_size);
+            // ------------------ BinarySearch ----------------------------------
+            int[] temp = null; int check;
 
-            // ------------------ Default Sort ----------------------------------
             try
             {
-                Console.WriteLine("\nTest A: Sort integer numbers applying Default Sort with the AscendingIntComparer: ");
+                temp = new int[problem_size];
+                data.CopyTo(temp, 0);
+                Array.Sort(temp, new AscendingIntComparer());
+                Console.WriteLine("\nTest A: Search for key 333 in the array of integer numbers sorted via the AscendingIntComparer: ");
                 vector = new Vector<int>(problem_size);
-                for (int i = 0; i < problem_size; i++) vector.Add(data[i]);
-                Console.WriteLine("Initial data: " + vector.ToString());
-                vector.Sort(null, new AscendingIntComparer());
-                Console.WriteLine("Resulting order: " + vector.ToString());
-                if (!CheckAscending(vector))
+                for (int i = 0; i < problem_size; i++) vector.Add(temp[i]);
+                Console.WriteLine("Elements in the Vector: " + vector.ToString());
+                check = Array.BinarySearch(temp, 333, new AscendingIntComparer());
+                check = check < 0 ? -1 : check;
+                if (vector.BinarySearch(333, new AscendingIntComparer()) != check)
                 {
                     Console.WriteLine(" :: FAIL");
                     result = result + "-";
                 }
                 else
                 {
-                    Console.WriteLine(" :: SUCCESS");
-                    result = result + "A";
+                   Console.WriteLine(" :: SUCCESS");
+                   result = result + "A";
                 }
             }
             catch (Exception exception)
@@ -90,21 +65,24 @@ namespace Vector
 
             try
             {
-                Console.WriteLine("\nTest B: Sort integer numbers applying Default Sort with the DescendingIntComparer: ");
+                temp = new int[problem_size];
+                data.CopyTo(temp, 0);
+                Array.Sort(temp, new AscendingIntComparer());
+                Console.WriteLine("\nTest B: Search for key " + (temp[0] - 1) + " in the array of integer numbers sorted via the AscendingIntComparer: ");
                 vector = new Vector<int>(problem_size);
-                for (int i = 0; i < problem_size; i++) vector.Add(data[i]);
-                Console.WriteLine("Initial data: " + vector.ToString());
-                vector.Sort(null, new DescendingIntComparer());
-                Console.WriteLine("Resulting order: " + vector.ToString());
-                if (!CheckDescending(vector))
+                for (int i = 0; i < problem_size; i++) vector.Add(temp[i]);
+                Console.WriteLine("Elements in the Vector: " + vector.ToString());
+                check = Array.BinarySearch(temp, temp[0] - 1, new AscendingIntComparer());
+                check = check < 0 ? -1 : check;
+                if (vector.BinarySearch(temp[0] - 1, new AscendingIntComparer()) != check)
                 {
                     Console.WriteLine(" :: FAIL");
                     result = result + "-";
                 }
                 else
                 {
-                    Console.WriteLine(" :: SUCCESS");
-                    result = result + "B";
+                   Console.WriteLine(" :: SUCCESS");
+                   result = result + "B";
                 }
             }
             catch (Exception exception)
@@ -116,50 +94,24 @@ namespace Vector
 
             try
             {
-                Console.WriteLine("\nTest C: Sort integer numbers applying Default Sort with the EvenNumberFirstComparer: ");
+                temp = new int[problem_size];
+                data.CopyTo(temp, 0);
+                Array.Sort(temp, new AscendingIntComparer());
+                Console.WriteLine("\nTest C: Search for key " + (temp[problem_size - 1] + 1) + " in the array of integer numbers sorted via the AscendingIntComparer: ");
                 vector = new Vector<int>(problem_size);
-                for (int i = 0; i < problem_size; i++) vector.Add(data[i]);
-                Console.WriteLine("Initial data: " + vector.ToString());
-                vector.Sort(null, new EvenNumberFirstComparer());
-                Console.WriteLine("Resulting order: " + vector.ToString());
-                if (!CheckEvenNumberFirst(vector))
+                for (int i = 0; i < problem_size; i++) vector.Add(temp[i]);
+                Console.WriteLine("Elements in the Vector: " + vector.ToString());
+                check = Array.BinarySearch(temp, temp[problem_size - 1] + 1, new AscendingIntComparer());
+                check = check < 0 ? -1 : check;
+                if (vector.BinarySearch(temp[problem_size - 1] + 1, new AscendingIntComparer()) != check)
                 {
                     Console.WriteLine(" :: FAIL");
                     result = result + "-";
                 }
                 else
                 {
-                    Console.WriteLine(" :: SUCCESS");
-                    result = result + "C";
-                }
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine(" :: FAIL");
-                Console.WriteLine(exception.ToString());
-                result = result + "-";
-            }
-
-
-            // ------------------ BubbleSort ----------------------------------
-            
-            try
-            {
-                Console.WriteLine("\nTest D: Sort integer numbers applying BubbleSort with the AscendingIntComparer: ");
-                vector = new Vector<int>(problem_size);
-                for (int i = 0; i < problem_size; i++) vector.Add(data[i]);
-                Console.WriteLine("Initial data: " + vector.ToString());
-                vector.Sort(new BubbleSort(),new AscendingIntComparer());
-                Console.WriteLine("Resulting order: " + vector.ToString());
-                if (!CheckAscending(vector))
-                {
-                    Console.WriteLine(" :: FAIL");
-                    result = result + "-";
-                }
-                else
-                {
-                    Console.WriteLine(" :: SUCCESS");
-                    result = result + "D";
+                   Console.WriteLine(" :: SUCCESS");
+                   result = result + "C";
                 }
             }
             catch (Exception exception)
@@ -171,21 +123,24 @@ namespace Vector
 
             try
             {
-                Console.WriteLine("\nTest E: Sort integer numbers applying BubbleSort with the DescendingIntComparer: ");
+                temp = new int[problem_size];
+                data.CopyTo(temp, 0);
+                Array.Sort(temp, new DescendingIntComparer());
+                Console.WriteLine("\nTest D: Search for key 333 in the array of integer numbers sorted via the DescendingIntComparer: ");
                 vector = new Vector<int>(problem_size);
-                for (int i = 0; i < problem_size; i++) vector.Add(data[i]);
-                Console.WriteLine("Initial data: " + vector.ToString());
-                vector.Sort(new BubbleSort(), new DescendingIntComparer());
-                Console.WriteLine("Resulting order: " + vector.ToString());
-                if (!CheckDescending(vector))
+                for (int i = 0; i < problem_size; i++) vector.Add(temp[i]);
+                Console.WriteLine("Elements in the Vector: " + vector.ToString());
+                check = Array.BinarySearch(temp, 333, new DescendingIntComparer());
+                check = check < 0 ? -1 : check;
+                if (vector.BinarySearch(333, new DescendingIntComparer()) != check)
                 {
                     Console.WriteLine(" :: FAIL");
                     result = result + "-";
                 }
                 else
                 {
-                    Console.WriteLine(" :: SUCCESS");
-                    result = result + "E";
+                   Console.WriteLine(" :: SUCCESS");
+                   result = result + "D";
                 }
             }
             catch (Exception exception)
@@ -197,51 +152,24 @@ namespace Vector
 
             try
             {
-                Console.WriteLine("\nTest F: Sort integer numbers applying BubbleSort with the EvenNumberFirstComparer: ");
+                temp = new int[problem_size];
+                data.CopyTo(temp, 0);
+                Array.Sort(temp, new DescendingIntComparer());
+                Console.WriteLine("\nTest E: Search for key " + (temp[0] - 1) + " in the array of integer numbers sorted via the DescendingIntComparer: ");
                 vector = new Vector<int>(problem_size);
-                for (int i = 0; i < problem_size; i++) vector.Add(data[i]);
-                Console.WriteLine("Initial data: " + vector.ToString());
-                vector.Sort(new BubbleSort(), new EvenNumberFirstComparer());
-                Console.WriteLine("Resulting order: " + vector.ToString());
-                if (!CheckEvenNumberFirst(vector))
+                for (int i = 0; i < problem_size; i++) vector.Add(temp[i]);
+                Console.WriteLine("Elements in the Vector: " + vector.ToString());
+                check = Array.BinarySearch(temp, temp[0] - 1, new DescendingIntComparer());
+                check = check < 0 ? -1 : check;
+                if (vector.BinarySearch(temp[0] - 1, new DescendingIntComparer()) != check)
                 {
                     Console.WriteLine(" :: FAIL");
                     result = result + "-";
                 }
                 else
                 {
-                    Console.WriteLine(" :: SUCCESS");
-                    result = result + "F";
-                }
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine(" :: FAIL");
-                Console.WriteLine(exception.ToString());
-                result = result + "-";
-            }
-
-
-
-            // ------------------ SelectionSort ----------------------------------
-
-            try
-            {
-                Console.WriteLine("\nTest G: Sort integer numbers applying SelectionSort with the AscendingIntComparer: ");
-                vector = new Vector<int>(problem_size);
-                for (int i = 0; i < problem_size; i++) vector.Add(data[i]);
-                Console.WriteLine("Initial data: " + vector.ToString());
-                vector.Sort(new SelectionSort(), new AscendingIntComparer());
-                Console.WriteLine("Resulting order: " + vector.ToString());
-                if (!CheckAscending(vector))
-                {
-                    Console.WriteLine(" :: FAIL");
-                    result = result + "-";
-                }
-                else
-                {
-                    Console.WriteLine(" :: SUCCESS");
-                    result = result + "G";
+                   Console.WriteLine(" :: SUCCESS");
+                   result = result + "E";
                 }
             }
             catch (Exception exception)
@@ -253,129 +181,24 @@ namespace Vector
 
             try
             {
-                Console.WriteLine("\nTest H: Sort integer numbers applying SelectionSort with the DescendingIntComparer: ");
+                temp = new int[problem_size];
+                data.CopyTo(temp, 0);
+                Array.Sort(temp, new DescendingIntComparer());
+                Console.WriteLine("\nTest F: Search for key " + (temp[problem_size - 1] + 1) + " in the array of integer numbers sorted via the DescendingIntComparer: ");
                 vector = new Vector<int>(problem_size);
-                for (int i = 0; i < problem_size; i++) vector.Add(data[i]);
-                Console.WriteLine("Initial data: " + vector.ToString());
-                vector.Sort(new SelectionSort(), new DescendingIntComparer());
-                Console.WriteLine("Resulting order: " + vector.ToString());
-                if (!CheckDescending(vector))
+                for (int i = 0; i < problem_size; i++) vector.Add(temp[i]);
+                Console.WriteLine("Elements in the Vector: " + vector.ToString());
+                check = Array.BinarySearch(temp, temp[problem_size - 1] + 1, new DescendingIntComparer());
+                check = check < 0 ? -1 : check;
+                if (vector.BinarySearch(temp[problem_size - 1] + 1, new DescendingIntComparer()) != check)
                 {
                     Console.WriteLine(" :: FAIL");
                     result = result + "-";
                 }
                 else
                 {
-                    Console.WriteLine(" :: SUCCESS");
-                    result = result + "H";
-                }
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine(" :: FAIL");
-                Console.WriteLine(exception.ToString());
-                result = result + "-";
-            }
-
-            try
-            {
-                Console.WriteLine("\nTest I: Sort integer numbers applying SelectionSort with the EvenNumberFirstComparer: ");
-                vector = new Vector<int>(problem_size);
-                for (int i = 0; i < problem_size; i++) vector.Add(data[i]);
-                Console.WriteLine("Initial data: " + vector.ToString());
-                vector.Sort(new SelectionSort(), new EvenNumberFirstComparer());
-                Console.WriteLine("Resulting order: " + vector.ToString());
-                if (!CheckEvenNumberFirst(vector))
-                {
-                    Console.WriteLine(" :: FAIL");
-                    result = result + "-";
-                }
-                else
-                {
-                    Console.WriteLine(" :: SUCCESS");
-                    result = result + "I";
-                }
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine(" :: FAIL");
-                Console.WriteLine(exception.ToString());
-                result = result + "-";
-            }
-
-
-
-            // ------------------ InsertionSort ----------------------------------
-
-            try
-            {
-                Console.WriteLine("\nTest J: Sort integer numbers applying InsertionSort with the AscendingIntComparer: ");
-                vector = new Vector<int>(problem_size);
-                for (int i = 0; i < problem_size; i++) vector.Add(data[i]);
-                Console.WriteLine("Initial data: " + vector.ToString());
-                vector.Sort(new InsertionSort(), new AscendingIntComparer());
-                Console.WriteLine("Resulting order: " + vector.ToString());
-                if (!CheckAscending(vector))
-                {
-                    Console.WriteLine(" :: FAIL");
-                    result = result + "-";
-                }
-                else
-                {
-                    Console.WriteLine(" :: SUCCESS");
-                    result = result + "J";
-                }
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine(" :: FAIL");
-                Console.WriteLine(exception.ToString());
-                result = result + "-";
-            }
-
-            try
-            {
-                Console.WriteLine("\nTest K: Sort integer numbers applying InsertionSort with the DescendingIntComparer: ");
-                vector = new Vector<int>(problem_size);
-                for (int i = 0; i < problem_size; i++) vector.Add(data[i]);
-                Console.WriteLine("Initial data: " + vector.ToString());
-                vector.Sort(new InsertionSort(), new DescendingIntComparer());
-                Console.WriteLine("Resulting order: " + vector.ToString());
-                if (!CheckDescending(vector))
-                {
-                    Console.WriteLine(" :: FAIL");
-                    result = result + "-";
-                }
-                else
-                {
-                    Console.WriteLine(" :: SUCCESS");
-                    result = result + "K";
-                }
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine(" :: FAIL");
-                Console.WriteLine(exception.ToString());
-                result = result + "-";
-            }
-
-            try
-            {
-                Console.WriteLine("\nTest L: Sort integer numbers applying InsertionSort with the EvenNumberFirstComparer: ");
-                vector = new Vector<int>(problem_size);
-                for (int i = 0; i < problem_size; i++) vector.Add(data[i]);
-                Console.WriteLine("Initial data: " + vector.ToString());
-                vector.Sort(new InsertionSort(), new EvenNumberFirstComparer());
-                Console.WriteLine("Resulting order: " + vector.ToString());
-                if (!CheckEvenNumberFirst(vector))
-                {
-                    Console.WriteLine(" :: FAIL");
-                    result = result + "-";
-                }
-                else
-                {
-                    Console.WriteLine(" :: SUCCESS");
-                    result = result + "L";
+                   Console.WriteLine(" :: SUCCESS");
+                   result = result + "F";
                 }
             }
             catch (Exception exception)
@@ -388,8 +211,6 @@ namespace Vector
             Console.WriteLine("\n\n ------------------- SUMMARY ------------------- ");
             Console.WriteLine("Tests passed: " + result);
             Console.ReadKey();
-
         }
-
     }
 }

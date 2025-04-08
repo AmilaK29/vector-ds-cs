@@ -197,5 +197,26 @@ namespace Vector
             }
         }
 
+        public int BinarySearch(T item , IComparer<T> compare){
+            // This method performs a binary search on the sorted array
+            // It returns the index of the item if found, otherwise it returns -1
+            int left = 0;
+            int right = Count - 1;
+
+            while (left <= right)
+            {
+                int mid = left + (right - left) / 2;
+
+                // Compare the middle element with the target item
+                int comparison = compare.Compare(data[mid], item);
+
+                if (comparison == 0) return mid; // Item found
+                if (comparison < 0) left = mid + 1; // Search in the right half
+                else right = mid - 1; // Search in the left half
+            }
+
+            return -1; // Item not found
+        }
+
     }
 }
